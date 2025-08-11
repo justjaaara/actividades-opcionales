@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript</title>
+  </head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .container-jugador1,
+    .container-jugador2 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid #333;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f5f5f5;
+      width: 250px;
+    }
+
+    progress {
+      width: 200px;
+      height: 20px;
+      margin: 10px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #45a049;
+    }
+
+    #turno-actual {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #333;
+    }
+
+    #mensaje-juego {
+      font-size: 18px;
+      margin: 20px 0;
+      min-height: 25px;
+      color: #666;
+    }
+
+    #reiniciar {
+      background-color: #f44336;
+    }
+
+    #reiniciar:hover {
+      background-color: #da190b;
+    }
+
+    .comodin {
+      background-color: #ff9800;
+    }
+
+    .comodin:hover:not(:disabled) {
+      background-color: #e68900;
+    }
+
+    .tipo-comodin {
+      font-size: 12px;
+      color: #ff9800;
+      font-weight: bold;
+      margin-top: 5px;
+      min-height: 15px;
+    }
+  </style>
+  <body>
+    <h1>Juego de Combate por Turnos</h1>
+    <div id="turno-actual">Turno del Jugador 1</div>
+
+    <div class="container">
+      <section class="container-jugador1">
+        <h2>Jugador 1</h2>
+        <progress id="vida-jugador1" value="100" max="100"></progress>
+        <div>Vida: <span id="vida-texto-1">100</span>/100</div>
+        <button id="atacar-1" onclick="atacar(1)">Atacar</button>
+        <button
+          id="comodin-1"
+          onclick="usarComodin(1)"
+          style="display: none"
+          class="comodin"
+        >
+          Usar Comodín
+        </button>
+        <div id="tipo-comodin-1" class="tipo-comodin"></div>
+      </section>
+      <section class="container-jugador2">
+        <h2>Jugador 2</h2>
+        <progress id="vida-jugador2" value="100" max="100"></progress>
+        <div>Vida: <span id="vida-texto-2">100</span>/100</div>
+        <button id="atacar-2" onclick="atacar(2)" disabled>Atacar</button>
+        <button
+          id="comodin-2"
+          onclick="usarComodin(2)"
+          style="display: none"
+          class="comodin"
+        >
+          Usar Comodín
+        </button>
+        <div id="tipo-comodin-2" class="tipo-comodin"></div>
+      </section>
+    </div>
+
+    <div id="mensaje-juego"></div>
+    <button id="reiniciar" onclick="reiniciarJuego()" style="display: none">
+      Reiniciar Juego
+    </button>
+
+    <script>
+      let jugador1Vida = 100;
+      let jugador2Vida = 100;
+      let turnoActual = 1; // 1 para jugador 1, 2 para jugador 2
+      let juegoTerminado = false;
+
+      let comodines = {
+        1: { activo: false, tipo: null },
+        2: { activo: false, tipo: null },
+      };
+
+      const tiposComodin = [
+        {
+          nombre: "❤️ Curación",
+          descripcion: "Recupera 30 HP",
+          efecto: "curar",
+        },
+        {
+          nombre: "⚡ Ataque Crítico",
+          descripcion: "Próximo ataque +15 daño",
+          efecto: "critico",
+        },
+        {
+          nombre: "🛡️ Escudo",
+          descripcion: "Reduce próximo daño a la mitad",
+          efecto: "escudo",
+        },
+      ];
+
+      let efectosActivos = {
+        1: { critico: false, escudo: false },
+        2: { critico: false, escudo: false },
+      };
+
+      function atacar(jugador) {
+        if (juegoTerminado) return;
+
+        if (jugador !== turnoActual) return;
+
+        let daño = Math.floor(Math.random() * 16) + 10;
+
+        if (efectosActivos[jugador].critico) {
+          daño += 15;
+          efectosActivos[jugador].critico = false;
+          mostrarMensaje(
+            `¡Ataque crítico! Jugador ${jugador} causa ${daño} de daño (+15 por crítico)!`
+          );
+        } else {
+          mostrarMensaje(`Jugador ${jugador} ataca y causa ${daño} de daño!`);
+        }
+
+        if (jugador === 1) {
+          let dañoFinal = daño;
+
+          if (efectosActivos[2].escudo) {
+            dañoFinal = Math.floor(daño / 2);
+            efectosActivos[2].escudo = false;
+            mostrarMensaje(
+              `🛡️ Escudo activado! Daño reducido de ${daño} a ${dañoFinal}!`
+            );
+          }
+
+          jugador2Vida -= dañoFinal;
+          if (jugador2Vida < 0) jugador2Vida = 0;
+
+          actualizarVida(2, jugador2Vida);
+
+          if (jugador2Vida <= 0) {
+            terminarJuego("¡Jugador 1 gana!");
+            return;
+          }
+        } else {
+          let dañoFinal = daño;
+
+          if (efectosActivos[1].escudo) {
+            dañoFinal = Math.floor(daño / 2);
+            efectosActivos[1].escudo = false;
+            mostrarMensaje(
+              `🛡️ Escudo activado! Daño reducido de ${daño} a ${dañoFinal}!`
+            );
+          }
+
+          jugador1Vida -= dañoFinal;
+          if (jugador1Vida < 0) jugador1Vida = 0;
+
+          actualizarVida(1, jugador1Vida);
+
+          if (jugador1Vida <= 0) {
+            terminarJuego("¡Jugador 2 gana!");
+            return;
+          }
+        }
+
+        cambiarTurno();
+
+        if (Math.random() < 0.2) {
+          generarComodin(turnoActual);
+        }
+      }
+
+      function generarComodin(jugador) {
+        if (comodines[jugador].activo) return;
+
+        const tipoAleatorio =
+          tiposComodin[Math.floor(Math.random() * tiposComodin.length)];
+        comodines[jugador] = { activo: true, tipo: tipoAleatorio };
+
+        document.getElementById(`comodin-${jugador}`).style.display = "block";
+        document.getElementById(`tipo-comodin-${jugador}`).textContent =
+          tipoAleatorio.descripcion;
+
+        setTimeout(() => {
+          mostrarMensaje(
+            `¡Jugador ${jugador} obtuvo un comodín: ${tipoAleatorio.nombre}!`
+          );
+        }, 500);
+      }
+
+      function usarComodin(jugador) {
+        if (!comodines[jugador].activo || jugador !== turnoActual) return;
+
+        const comodin = comodines[jugador].tipo;
+
+        switch (comodin.efecto) {
+          case "curar":
+            if (jugador === 1) {
+              jugador1Vida = Math.min(jugador1Vida + 30, 100);
+              actualizarVida(1, jugador1Vida);
+            } else {
+              jugador2Vida = Math.min(jugador2Vida + 30, 100);
+              actualizarVida(2, jugador2Vida);
+            }
+            mostrarMensaje(`¡Jugador ${jugador} se cura 30 HP!`);
+            break;
+
+          case "critico":
+            efectosActivos[jugador].critico = true;
+            mostrarMensaje(
+              `¡Jugador ${jugador} carga un ataque crítico para su próximo turno!`
+            );
+            break;
+
+          case "escudo":
+            efectosActivos[jugador].escudo = true;
+            mostrarMensaje(`¡Jugador ${jugador} activa un escudo protector!`);
+            break;
+        }
+
+        comodines[jugador] = { activo: false, tipo: null };
+        document.getElementById(`comodin-${jugador}`).style.display = "none";
+        document.getElementById(`tipo-comodin-${jugador}`).textContent = "";
+
+        setTimeout(() => {
+          cambiarTurno();
+        }, 1000);
+      }
+
+      function actualizarVida(jugador, vida) {
+        document.getElementById(`vida-jugador${jugador}`).value = vida;
+        document.getElementById(`vida-texto-${jugador}`).textContent = vida;
+      }
+
+      function cambiarTurno() {
+        turnoActual = turnoActual === 1 ? 2 : 1;
+
+        document.getElementById(
+          "turno-actual"
+        ).textContent = `Turno del Jugador ${turnoActual}`;
+
+        document.getElementById("atacar-1").disabled = turnoActual !== 1;
+        document.getElementById("atacar-2").disabled = turnoActual !== 2;
+
+        document.getElementById("comodin-1").disabled = turnoActual !== 1;
+        document.getElementById("comodin-2").disabled = turnoActual !== 2;
+      }
+
+      function mostrarMensaje(mensaje) {
+        document.getElementById("mensaje-juego").textContent = mensaje;
+      }
+
+      function terminarJuego(mensaje) {
+        juegoTerminado = true;
+        mostrarMensaje(mensaje);
+
+        document.getElementById("atacar-1").disabled = true;
+        document.getElementById("atacar-2").disabled = true;
+
+        document.getElementById("comodin-1").disabled = true;
+        document.getElementById("comodin-2").disabled = true;
+
+        document.getElementById("reiniciar").style.display = "block";
+
+        document.getElementById("turno-actual").textContent = "Juego terminado";
+      }
+
+      function reiniciarJuego() {
+        // Resetear valores
+        jugador1Vida = 100;
+        jugador2Vida = 100;
+        turnoActual = 1;
+        juegoTerminado = false;
+
+        // Resetear comodines y efectos
+        comodines = {
+          1: { activo: false, tipo: null },
+          2: { activo: false, tipo: null },
+        };
+        efectosActivos = {
+          1: { critico: false, escudo: false },
+          2: { critico: false, escudo: false },
+        };
+
+        actualizarVida(1, 100);
+        actualizarVida(2, 100);
+
+        document.getElementById("turno-actual").textContent =
+          "Turno del Jugador 1";
+        document.getElementById("atacar-1").disabled = false;
+        document.getElementById("atacar-2").disabled = true;
+        document.getElementById("mensaje-juego").textContent = "";
+        document.getElementById("reiniciar").style.display = "none";
+
+        document.getElementById("comodin-1").style.display = "none";
+        document.getElementById("comodin-2").style.display = "none";
+        document.getElementById("tipo-comodin-1").textContent = "";
+        document.getElementById("tipo-comodin-2").textContent = "";
+      }
+    </script>
+  </body>
+</html>
