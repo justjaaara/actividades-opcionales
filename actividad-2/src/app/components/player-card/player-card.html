@@ -1,0 +1,26 @@
+<section class="container-jugador">
+  <h2>Jugador {{ playerId() }}</h2>
+
+  <progress [value]="health()" max="100"></progress>
+  <div>Vida: {{ health() }}/100</div>
+
+  <button
+    class="atacar-btn"
+    [disabled]="gameService.isGameOver() || gameService.currentTurn() !== playerId()"
+    (click)="onAttack()"
+  >
+    Atacar
+  </button>
+
+  <button
+    [disabled]="gameService.isGameOver() || gameService.currentTurn() !== playerId()"
+    (click)="onUseBonification()"
+    [style.display]="bonification().active ? 'block' : 'none'"
+    class="comodin"
+  >
+    Usar Comodín
+  </button>
+  <div class="tipo-comodin" [style.display]="bonification().active ? 'block' : 'none'">
+    {{ bonification().type?.description }}
+  </div>
+</section>
