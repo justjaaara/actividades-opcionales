@@ -1,7 +1,9 @@
-<button
-  class="restart-btn"
-  (click)="gameService.restartGame()"
-  [style.display]="gameService.isGameOver() ? 'block' : 'none'"
->
-  Reiniciar Juego
-</button>
+<div class="container">
+  <button
+    class="restart-btn"
+    (click)="gameService.restartGame()"
+    [style.display]="gameService.isGameOver() ? 'block' : 'none'"
+  >
+    Reiniciar Juego
+  </button>
+</div>
