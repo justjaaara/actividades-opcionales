@@ -1,74 +1,11 @@
 <body>
-  <h1>Juego de Combate por Turnos</h1>
-  <div id="turno-actual">
-    {{
-    isGameOver() ? 'Juego terminado' : `Turno del jugador ${currentTurn()}`
-    }}
-  </div>
+  <app-game-header></app-game-header>
 
   <div class="container">
-    <section class="container-jugador1">
-      <h2>Jugador 1</h2>
-      <progress id="vida-jugador1" [value]="playerOneHealth()" max="100"></progress>
-      <div>Vida: {{ playerOneHealth() }}/100</div>
-      <button
-        id="atacar-1"
-        [disabled]="isGameOver() || currentTurn() !== 1"
-        (click)="attackPlayer(1)"
-      >
-        Atacar
-      </button>
-
-      <button
-        id="comodin-1"
-        [disabled]="isGameOver() || currentTurn() !== 1"
-        (click)="useBonification(1)"
-        [style.display]="bonnifications()[1].active ? 'block' : 'none'"
-        class="comodin"
-      >
-        Usar Comodín
-      </button>
-      <div
-        id="tipo-comodin-1"
-        class="tipo-comodin"
-        [style.display]="bonnifications()[1].active ? 'block' : 'none'"
-      >
-        {{ bonnifications()[1].type?.description }}
-      </div>
-    </section>
-    <section class="container-jugador2">
-      <h2>Jugador 2</h2>
-      <progress id="vida-jugador2" [value]="playerTwoHealth()" max="100"></progress>
-      <div>Vida:{{ playerTwoHealth() }}/100</div>
-      <button
-        id="atacar-2"
-        (click)="attackPlayer(2)"
-        [disabled]="isGameOver() || currentTurn() !== 2"
-      >
-        Atacar
-      </button>
-      <button
-        id="comodin-2"
-        (click)="useBonification(2)"
-        [disabled]="isGameOver() || currentTurn() !== 2"
-        [style.display]="bonnifications()[2].active ? 'block' : 'none'"
-        style="display: none"
-        class="comodin"
-      >
-        Usar Comodín
-      </button>
-      <div
-        id="tipo-comodin-2"
-        class="tipo-comodin"
-        [style.display]="bonnifications()[2].active ? 'block' : 'none'"
-      >
-        {{ bonnifications()[2].type?.description }}
-      </div>
-    </section>
+    <app-player-card [playerId]="1"></app-player-card>
+    <app-player-card [playerId]="2"></app-player-card>
   </div>
 
-  <div id="mensaje-juego">{{ gameMessage() }}</div>
-  <button id="reiniciar" (click)="restartGame()" [style.display]="isGameOver() ? 'block' : 'none'">
-    Reiniciar Juego
-  </button>
+  <div class="mensaje-juego">{{ gameService.gameMessage() }}</div>
+  <app-game-controls></app-game-controls>
 </body>
