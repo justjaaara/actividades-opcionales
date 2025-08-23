@@ -1,0 +1,6 @@
+<h1>Juego de Combate por Turnos</h1>
+<div id="turno-actual">
+  {{
+    gameService.isGameOver() ? 'Juego terminado' : `Turno del jugador ${gameService.currentTurn()}`
+  }}
+</div>
