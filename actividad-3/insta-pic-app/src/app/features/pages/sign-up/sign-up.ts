@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 })
 export class SignUp {
   fb = inject(FormBuilder);
+  router = inject(Router);
 
   ruta = '';
 
@@ -38,6 +39,8 @@ export class SignUp {
     }
 
     localStorage.setItem(user.username!, JSON.stringify(user));
+    alert('El usuario se ha creado exitosamente');
+    this.router.navigate(['/login']);
 
     //let user2 = JSON.parse(JSON.stringify(user))
   }

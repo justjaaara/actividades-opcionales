@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 })
 export class Login {
   formBuilder = inject(FormBuilder);
+  router = inject(Router);
 
   LogInForm = this.formBuilder.group({
     username: ['', [Validators.required, Validators.minLength(2)]],
@@ -34,6 +35,7 @@ export class Login {
       const isValidPassword = inputPassword === credentials.password;
       if (isValidPassword) {
         alert('Inicio de sesión exitoso');
+        this.router.navigate(['/home']);
       } else {
         alert('Las credenciales son incorrectas mi papá');
       }

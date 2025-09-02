@@ -1,0 +1,32 @@
+
+.header{
+    padding: 20px;
+    background-color: #0c8599;
+    color: white;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+
+    
+}
+.navbar{
+    display: flex;
+    gap: 20px;
+
+}
+.left-section {
+    display: flex;
+    align-items: center;
+    gap:20px;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+  nav a.active {
+    color: #000708;
+    text-decoration: underline;
+  }
