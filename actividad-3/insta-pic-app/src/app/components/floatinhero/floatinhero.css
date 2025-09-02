@@ -1,0 +1,42 @@
+.user-icon{
+    width: 150px;
+}
+
+.profile{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    
+}
+
+.flotante{
+    display: flex;
+    flex-direction: row;
+    border: 2px solid black;
+    border-radius:15px ;
+    margin: 20px;
+    padding: 25px;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+
+.metrics{
+    display:inline-flex;
+    flex-direction: row;
+    gap: 50px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.metric-data{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.metric-data div{
+    font-size: 40px;
+
+}
