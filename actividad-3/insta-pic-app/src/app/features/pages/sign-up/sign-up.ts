@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SignUpFormData } from '../../../shared/interfaces/user';
 import { Auth } from '../../../shared/services/auth';
+import { passwordMatchValidator } from '../../../validators/password-validator';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,16 +22,21 @@ export class SignUp {
 
   validators = [Validators.required, Validators.minLength(4)];
 
-  signUpForm = this.fb.group({
-    username: ['jjzapata', [Validators.required]],
-    email: ['', [Validators.required]],
-    password: ['', this.validators],
-    rePassword: ['', this.validators],
-  });
+  signUpForm = this.fb.group(
+    {
+      username: ['jjzapata', [Validators.required]],
+      email: ['', [Validators.required]],
+      password: ['', this.validators],
+      rePassword: ['', this.validators],
+    },
+    {
+      validators: passwordMatchValidator('password', 'rePassword'),
+    }
+  );
 
   onSignUp() {
     if (!this.signUpForm.valid) {
-      alert('Faltan campos por diligenciar');
+      this.showValidationErrors();
       return;
     }
 
@@ -42,5 +48,16 @@ export class SignUp {
     } else {
       alert(signUpResponse.message);
     }
+  }
+
+  private showValidationErrors() {
+    const errors = this.signUpForm.errors;
+
+    if (errors?.['passwordMismatch']) {
+      alert('Las contraseñas no coindicen');
+      return;
+    }
+
+    alert('Faltan campos por diligenciar');
   }
 }
