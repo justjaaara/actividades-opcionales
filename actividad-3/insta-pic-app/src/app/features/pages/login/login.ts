@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { Auth } from '../../../shared/services/auth';
+import { LoginFormData } from '../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 export class Login {
   formBuilder = inject(FormBuilder);
   router = inject(Router);
+  authService = inject(Auth);
 
   LogInForm = this.formBuilder.group({
     username: ['', [Validators.required, Validators.minLength(2)]],
@@ -18,27 +21,19 @@ export class Login {
   });
 
   onLogin() {
-    const { username: inputUsername, password: inputPassword } = this.LogInForm.value;
+    const user = this.LogInForm.value as LoginFormData;
 
-    if (!this.LogInForm.valid) {
+    if (!this.LogInForm.valid || !user.username || !user.password) {
       alert('Faltan campos por diligenciar mi papacho');
       return;
     }
-    const credentialsString = localStorage.getItem(inputUsername!);
-    if (!credentialsString) {
-      alert('Usuario no encontrado');
-      return;
-    }
-    if (credentialsString) {
-      const credentials = JSON.parse(credentialsString);
 
-      const isValidPassword = inputPassword === credentials.password;
-      if (isValidPassword) {
-        alert('Inicio de sesión exitoso');
-        this.router.navigate(['/home']);
-      } else {
-        alert('Las credenciales son incorrectas mi papá');
-      }
+    const loginResponse = this.authService.login(user);
+
+    if (loginResponse.success) {
+      this.router.navigate([loginResponse.redirectTo]);
+    } else {
+      alert('Credenciales incorrectas mi papacho');
     }
   }
 }
