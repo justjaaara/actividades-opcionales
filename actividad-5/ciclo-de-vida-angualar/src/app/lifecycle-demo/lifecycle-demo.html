@@ -1,0 +1,21 @@
+<div class="lifecycle-demo">
+  <h3>Componente de Demostración</h3>
+
+  <div class="demo-content">
+    <p><strong>Nombre:</strong> {{ name || 'Sin nombre' }}</p>
+    <p><strong>Contador interno:</strong> {{ counter }}</p>
+    <p><strong>Contador externo:</strong> {{ externalCounter }}</p>
+    <p><strong>ID del elemento:</strong> {{ elementId }}</p>
+
+    <button (click)="incrementCounter()" class="counter-btn">Incrementar Contador</button>
+
+    <div #viewChild class="view-child">Elemento ViewChild</div>
+  </div>
+
+  <div class="instructions">
+    <p>
+      <strong>Consola:</strong> Abre las herramientas de desarrollador (F12) para ver los logs del
+      ciclo de vida.
+    </p>
+  </div>
+</div>

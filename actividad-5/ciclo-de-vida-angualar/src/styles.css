@@ -1,0 +1,45 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Estilos globales para la demostración del ciclo de vida */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+  line-height: 1.6;
+}
+
+/* Estilos para mejorar la legibilidad en la consola */
+.console-hint {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* Mejoras para elementos de formulario */
+input[type="text"] {
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #007acc;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}

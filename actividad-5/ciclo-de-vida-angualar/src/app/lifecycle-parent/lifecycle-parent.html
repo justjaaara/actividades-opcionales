@@ -1,0 +1,138 @@
+<div class="parent-container">
+  <h2>Ciclo de Vida Angular - Paso a Paso</h2>
+
+  <!-- Estado actual del proceso -->
+  <div class="current-status">
+    <h3>Estado Actual: {{ getCurrentPhaseDescription() }}</h3>
+    <div class="phase-indicator">
+      Fase {{ currentStep }}/8: {{ getPhaseSteps()[currentStep].name || 'No iniciado' }}
+    </div>
+  </div>
+
+  <!-- Controles específicos por fase -->
+  <div class="phase-controls">
+    <!-- Paso 0: Crear componente -->
+    <div *ngIf="currentStep === 0" class="step-control">
+      <h4>Paso 1: Crear el Componente</h4>
+      <p>Primero debemos crear una instancia del componente</p>
+      <button (click)="createComponent()" class="primary-btn">
+        Crear Componente (Constructor)
+      </button>
+    </div>
+
+    <!-- Paso 1: ngOnChanges -->
+    <div *ngIf="currentStep === 1" class="step-control">
+      <h4>Paso 2: ngOnChanges</h4>
+      <p>Cambia una propiedad @Input para disparar ngOnChanges</p>
+      <div class="input-demo">
+        <label>Cambiar nombre del componente:</label>
+        <input type="text" [(ngModel)]="tempName" placeholder="Escribe un nombre" />
+        <button (click)="triggerOnChanges()" class="primary-btn">
+          Aplicar Cambio (ngOnChanges)
+        </button>
+      </div>
+      <p>
+        <small>Valor actual: "{{ componentName }}" → Nuevo valor: "{{ tempName }}"</small>
+      </p>
+    </div>
+
+    <!-- Paso 2: ngOnInit -->
+    <div *ngIf="currentStep === 2" class="step-control">
+      <h4>Paso 3: ngOnInit</h4>
+      <p>Inicializar el componente (solo se ejecuta una vez)</p>
+      <button (click)="triggerOnInit()" class="primary-btn">Ejecutar ngOnInit</button>
+    </div>
+
+    <!-- Paso 3: ngDoCheck -->
+    <div *ngIf="currentStep === 3" class="step-control">
+      <h4>Paso 4: ngDoCheck</h4>
+      <p>Detectar cambios personalizados (se puede ejecutar múltiples veces)</p>
+      <div class="demo-actions">
+        <button (click)="triggerDoCheck()" class="primary-btn">Ejecutar ngDoCheck</button>
+        <button (click)="incrementCounter()" class="secondary-btn">
+          Incrementar Contador ({{ counter }})
+        </button>
+      </div>
+      <button (click)="nextStep()" class="next-btn">Continuar →</button>
+    </div>
+
+    <!-- Paso 4: ngAfterContentInit -->
+    <div *ngIf="currentStep === 4" class="step-control">
+      <h4>Paso 5: ngAfterContentInit</h4>
+      <p>El contenido proyectado está listo (solo se ejecuta una vez)</p>
+      <div class="content-preview">
+        <strong>Contenido proyectado:</strong> "{{ getProjectedContent() }}"
+      </div>
+      <button (click)="triggerAfterContentInit()" class="primary-btn">
+        Ejecutar ngAfterContentInit
+      </button>
+    </div>
+
+    <!-- Paso 5: ngAfterContentChecked -->
+    <div *ngIf="currentStep === 5" class="step-control">
+      <h4>Paso 6: ngAfterContentChecked</h4>
+      <p>Verificar el contenido proyectado</p>
+      <button (click)="triggerAfterContentChecked()" class="primary-btn">
+        Ejecutar ngAfterContentChecked
+      </button>
+      <button (click)="nextStep()" class="next-btn">Continuar →</button>
+    </div>
+
+    <!-- Paso 6: ngAfterViewInit -->
+    <div *ngIf="currentStep === 6" class="step-control">
+      <h4>Paso 7: ngAfterViewInit</h4>
+      <p>La vista del componente está lista, ViewChild disponible</p>
+      <button (click)="triggerAfterViewInit()" class="primary-btn">Ejecutar ngAfterViewInit</button>
+    </div>
+
+    <!-- Paso 7: ngAfterViewChecked -->
+    <div *ngIf="currentStep === 7" class="step-control">
+      <h4>Paso 8: ngAfterViewChecked</h4>
+      <p>Verificar la vista del componente</p>
+      <button (click)="triggerAfterViewChecked()" class="primary-btn">
+        Ejecutar ngAfterViewChecked
+      </button>
+      <button (click)="nextStep()" class="next-btn">Finalizar</button>
+    </div>
+
+    <!-- Completado -->
+    <div *ngIf="currentStep === 8" class="step-control completed">
+      <h4>🎉 ¡Ciclo de Vida Completado!</h4>
+      <p>Has ejecutado todos los hooks del ciclo de vida de Angular</p>
+      <div class="final-actions">
+        <button (click)="destroyComponent()" class="destroy-btn">
+          Destruir Componente (ngOnDestroy)
+        </button>
+        <button (click)="resetDemo()" class="reset-btn">Reiniciar Demostración</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progreso visual -->
+  <div class="progress-visual">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="(currentStep / 8) * 100"></div>
+    </div>
+    <div class="progress-dots">
+      <span
+        *ngFor="let step of getPhaseSteps(); let i = index"
+        class="dot"
+        [class.completed]="i < currentStep"
+        [class.current]="i === currentStep"
+        [class.pending]="i > currentStep"
+      >
+        {{ i + 1 }}
+      </span>
+    </div>
+  </div>
+
+  <!-- El componente solo aparece después de crearlo -->
+  <app-lifecycle-demo *ngIf="showComponent" [name]="componentName" [externalCounter]="counter">
+  </app-lifecycle-demo>
+
+  <!-- Utilidades -->
+  <div class="utilities">
+    <button (click)="clearConsole()" class="utility-btn">Limpiar Consola</button>
+    <small>Abre la consola (F12) para ver los logs detallados</small>
+  </div>
+</div>
